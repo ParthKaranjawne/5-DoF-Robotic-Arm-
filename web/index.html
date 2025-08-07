@@ -1,0 +1,40 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Robotic Arm Controller</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h2>Robotic Arm Control Panel</h2>
+    <div id="controls">
+        <input type="range" min="0" max="180" id="joint1" oninput="sendAngles()">
+        <input type="range" min="0" max="180" id="joint2" oninput="sendAngles()">
+        <input type="range" min="0" max="180" id="joint3" oninput="sendAngles()">
+        <input type="range" min="0" max="180" id="joint4" oninput="sendAngles()">
+        <input type="range" min="0" max="180" id="joint5" oninput="sendAngles()">
+    </div>
+    <button onclick="startRecording()">Record</button>
+    <button onclick="replay()">Replay</button>
+
+    <script>
+        var socket = new WebSocket('ws://' + location.hostname + ':81');
+        function sendAngles() {
+            var angles = [
+                document.getElementById("joint1").value,
+                document.getElementById("joint2").value,
+                document.getElementById("joint3").value,
+                document.getElementById("joint4").value,
+                document.getElementById("joint5").value
+            ];
+            socket.send(JSON.stringify({angles: angles}));
+        }
+        function startRecording() {
+            socket.send(JSON.stringify({command: "start_recording"}));
+        }
+        function replay() {
+            socket.send(JSON.stringify({command: "replay"}));
+        }
+    </script>
+</body>
+</html>
